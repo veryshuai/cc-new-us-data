@@ -1,0 +1,36 @@
+% TableDemographics20111116_.txt
+\rule{0pt}{6pt}
+\emph{Mean values:} & & & & \\[6pt]
+\ \  Age\footnote{In Census: %
+estimated age of population 18 years and over.} & 467 & 46.6 & (0.7) & 45.2\\
+\ \  Household size\footnote{Top-coded at 8 (in visibility survey).} & 
+475 & 2.9 & (0.1) & 2.6\\
+\ \  Children under 18 in household & 475 & 0.8 & (0.1) & 0.7\\[6pt]
+\hline
+\rule{0pt}{6pt}
+\emph{Percent distribution:} & & & & \\[6pt]
+\ \ Female & 479 & 64.3 & (2.2) & 50.9  \\
+\ \ Black & 467 & 13.5 & (1.6) & 12.3 \\
+\ \ Hispanic & 474 & 6.1 & (1.1) & 12.5 \\
+\ \ Married\footnote{In Census: %
+marital status of population 15 years and over.} & 473 & 55.4 & (2.3) & 54.4 \\
+\ \ Employed\footnote{In Census: %
+employment status of population 16 years and over (civilian labor force).} %
+& 473 & 63.2 & (2.2) & 63.4 \\[6pt]
+\ \ Education:\footnote{In Census: %
+educational attainment of population 25 years and over.} & 474 & & & \\
+\ \ \ \ Elementary (0-8) & & 2.1 & (0.7) & 7.5 \\
+\ \ \ \ High school (9-12) & & 22.2 & (1.9) & 40.7 \\
+\ \ \ \ College (13-16) &  & 53.6 & (2.3) & 42.8\\
+\ \ \ \ Graduate school (17 or more) & & 22.2 & (1.9) & 8.9\\[6pt]
+\ \ Total household income: & 388 & & & \\
+\ \ \ \ Less than \$20,000 & & 13.4 & (1.7) & 22.1 \\
+\ \ \ \ \$20,000 to \$40,000 & & 21.1 & (2.1) & 25.3 \\
+\ \ \ \ \$40,000 to \$60,000 & & 19.3 & (2.0) & 19.7 \\
+\ \ \ \ \$60,000 to \$100,000 & & 28.1 & (2.3) & 20.6 \\
+\ \ \ \ \$100,000 or more & & 18.0 & (2.0) & 12.3 \\[6pt]
+\ \ Region: & 479 & & & \\
+\ \ \ \ Northeast  & & 20.5 & (1.8) & 19.0 \\
+\ \ \ \ Midwest  & & 24.0 & (2.0) & 22.9 \\
+\ \ \ \ South  & & 39.7 & (2.2) & 35.6 \\
+\ \ \ \ West  & & 15.9 & (1.7) & 22.5 \\
