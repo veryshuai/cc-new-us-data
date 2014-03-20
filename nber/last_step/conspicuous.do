@@ -37,36 +37,30 @@ program define prepare_data
 	gen c4=alcohol
 	gen c5=niteclub
 	gen c6=clothes /*   */
-
-	gen c7=0  /*  */
-
-	gen c8=tailors
-	gen c9=jewelry
-	gen c10=hlthbeau
-	gen c11=renthome+12*homeval2 /* notice homeval2 not in vars 23-69 */ 
-	gen c12=rentothr
-	gen c13=furnish
-	gen c14=gas+elect+water /* notice that homefuel is left out */
-	gen c15=telephon /*  */
-
-	gen c16=0  /*  */
-
-	gen c17=servants
-	gen c18=drugs+orthopd+doctors+hospital+helthins /* notice that nurs is left out */
-	gen c19=busiserv
-	gen c20=lifeins
-	gen c21=autos
-	gen c22=parts+carservs
-	gen c23=gasoline /* notice that tolls is left out */
-	gen c24=autoins
-	gen c25=masstran+othtrans
-	gen c26=airfare
-	gen c27=books+pubs
-	gen c28=recsport
-	gen c29=othrec
-	gen c30=highedu+lowedu+othedu 
-	gen c31=charity
-* these 31 (29) cats are constructed from vars 23-69 in S&H (but see comments above),
+	gen c7=tailors
+	gen c8=jewelry
+	gen c9=hlthbeau
+	gen c10=renthome+12*homeval2 /* notice homeval2 not in vars 23-69 */ 
+	gen c11=rentothr
+	gen c12=furnish
+	gen c13=gas+elect+water /* notice that homefuel is left out */
+	gen c14=telephon /*  */
+	gen c15=servants
+	gen c16=drugs+orthopd+doctors+hospital+helthins /* notice that nurs is left out */
+	gen c17=busiserv
+	gen c18=lifeins
+	gen c19=autos
+	gen c20=parts+carservs
+	gen c21=gasoline /* notice that tolls is left out */
+	gen c22=autoins
+	gen c23=masstran+othtrans
+	gen c24=airfare
+	gen c25=books+pubs
+	gen c26=recsport
+	gen c27=othrec
+	gen c28=highedu+lowedu+othedu 
+	gen c29=charity
+* these 29 cats are constructed from vars 23-69 in S&H (but see comments above),
 * the only exception being that 12*homeval2 (var(75)) is added.
 * notice that foodwork+homefuel+nurs+tolls+toiletry+housuppl+gambling" (weighted by totwt) amount to 0.61% of exptot (notice: these are real figures; 10,400 obs). this figure is reported in the paper (notice though that January 2005 is missing in the data): "and together cover 99.4 percent of consumption expenditures in the data we use."
 
@@ -74,18 +68,18 @@ program define prepare_data
 	merge m:1 yearq using "${cpi_pathfile}", keep(match master)
 	drop _m*
 	local i=1
-	while `i'<=31 {
+	while `i'<=29 {
 		gen nom_c`i' = c`i' // just in case we want to test it. these nominal values can be deleted.
 		replace c`i' = c`i'/cpi_q_a*${base_cpi}
 		local ++i
 	} 
 
 	#delimit; 
-	gen exptot=0; local i=1; while `i'<=31 {; replace exptot=exptot+c`i'; local ++i; }; 
+	gen exptot=0; local i=1; while `i'<=29 {; replace exptot=exptot+c`i'; local ++i; }; 
 
 	#delimit cr
 	local i=1
-	while `i'<=31 { 
+	while `i'<=29 { 
 		gen lc`i' = log(1+c`i')
 		gen fc`i' = c`i'/exptot
 		local i = `i' + 1
@@ -112,7 +106,7 @@ program define vis_lux
 	capture gen f_temp=. /* f for fake (just kidding. for fraction, or share) */
 	capture gen e_temp=. /* e for elasticity */
 	local icat = 1
-	while `icat' <=31 {
+	while `icat' <=29 {
 	 quietly{
 		if      "$spec"=="lc" {
 			replace e_temp=slopelc`icat'ltot
@@ -182,7 +176,7 @@ program define vis_lux
 				,msymbol(Oh) msize(large) /* mlwidth(thin) */ mcolor(gs11)) ///
 		(scatter luxurindexb$spec catsb${subgroup} [w=luxurindexf$spec] if services==0 ///
 				,msymbol(Oh) msize(large) mlwidth(thick) mcolor(gs11)) ///
-		(scatter luxurindexb$spec catsb${subgroup} in 1/31 ///
+		(scatter luxurindexb$spec catsb${subgroup} in 1/29 ///
 				,msize(tiny) msymbol(none) mlabel(ncats3${subgroup}) mlabposition(0) mlabsize(vsmall)) ///
 		(lfit luxurindexb$spec catsb${subgroup} [w=luxurindexf$spec], lpattern(shortdash)) ///
 		, name($spec$iplot,replace) scheme(sj) ///
@@ -354,7 +348,7 @@ end;
 cap program drop run_fan;
 program def run_fan;
 	cap erase Fan\fan${fanversion};
-	local i = 1; local numcats = 31;
+	local i = 1; local numcats = 29;
 	if "$yname"=="fsgc" local numcats = 43;
 	while `i' <=`numcats' {; di `i';
 		preserve;
@@ -392,7 +386,7 @@ cap program drop draw_EC; * draw Engel curves; program def draw_EC;
 		local props="xlabel(0(50000)100000, format(%9.0gc)) xmtick(0(10000)130000, grid glcolor(gs8)) ylabel(#5, nogrid) ymtick(#10, grid glcolor(gs8)) xsize(1) ysize(2) aspect(2)";
 		local lfitrange=",range(6000 130000)"; }; 
 	local i =1; 
-	local numcats = 31; if "$yname"=="fsgc" local numcats = 43; 
+	local numcats = 29; if "$yname"=="fsgc" local numcats = 43; 
 	while `i' <=`numcats' {; if `i'==7 | `i'==16 local ++i;
 		local tit3=ncats3_[`i']; local tit4= ncats4_[`i']; local tit="`tit3' (`tit4')";
 * 	for getting rid of top percentile or other extreme values in case of "fc" or "c";
@@ -415,10 +409,10 @@ cap program drop draw_EC; * draw Engel curves; program def draw_EC;
 	graph combine ${yname}1$x ${yname}2$x ${yname}3$x ${yname}4$x ${yname}5$x ${yname}6$x       ${yname}8$x ${yname}9$x ${yname}10$x
 				${yname}11$x ${yname}12$x ${yname}13$x ${yname}14$x ${yname}15$x            ${yname}17$x ${yname}18$x ${yname}19$x ${yname}20$x
 				${yname}21$x ${yname}22$x ${yname}23$x ${yname}24$x ${yname}25$x ${yname}26$x ${yname}27$x ${yname}28$x ${yname}29$x ${yname}30$x
-				${yname}31$x,             cols(6) altshrink iscale(1.5) xsize(7.5) ysize(10)
+				${yname}29$x,             cols(6) altshrink iscale(1.5) xsize(7.5) ysize(10)
 /*			title("") subtitle("log-Engel Curves (CEX)")
 				note("Scatter plots, locally-weighted regressions, and linear fits are all weighted.") scheme(sj) */;
-*				fc31$x, holes(7 16) cols(6) /* scheme(sj) */;
+*				fc29$x, holes(7 16) cols(6) /* scheme(sj) */;
 	graph export graphs/Fig29combined${fanversion}_${today}.eps, logo(off) fontface(Times) replace;
 	graph save graphs/Fig29combinedFan${fanversion}_${today}, replace;
 	if "$yname"=="fsgc" {;
@@ -441,7 +435,7 @@ cap program drop Figure29ECs; program def Figure29ECs;
 	merge_vindices;
 	capture gen e_temp=.;
 #delimit;
-	local i=1; while `i'<=31 {; if `i'==7 | `i'==16 local ++i;
+	local i=1; while `i'<=29 {; if `i'==7 | `i'==16 local ++i;
 		* prepare for a linear EC presentation (lin-lin);
 		gen lin_xxfc`i' = exp(xxfc`i'ltot);
 		gen lin_pyfc`i' = (pyfc`i'ltot)*(lin_xxfc`i');
@@ -474,7 +468,7 @@ cap program drop Figure29ECs; program def Figure29ECs;
 		local ++i;
 	};
 	graph combine EC1 EC2 EC3 EC4 EC5 EC6 EC8 EC9 EC10 EC11 EC12 EC13 EC14 EC15 EC17 EC18 EC19 EC20
-		 EC21 EC22 EC23 EC24 EC25 EC26 EC27 EC28 EC29 EC30 EC31,
+		 EC21 EC22 EC23 EC24 EC25 EC26 EC27 EC28 EC29,
      rows(8) scheme(sj) xsize(6.5) ysize(8);
 #delimit;
 	graph export graphs/Figure29ECs${fanversion}_${curvetype}_${today}.eps, logo(off) fontface(Times) replace;
@@ -516,7 +510,7 @@ program def classify_goods_services
 	cap gen services=0
 	replace services=0
 	replace services=1 if inlist(_n, 8,10,12,14,15,17,18,19,20)
-	replace services=1 if inlist(_n, 22,24,25,26,29,30,31) 
+	replace services=1 if inlist(_n, 22,24,25,26,29) 
 end
 
 cap program drop merge_mfile 
