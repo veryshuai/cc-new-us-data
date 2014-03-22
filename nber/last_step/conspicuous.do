@@ -13,8 +13,8 @@ capture program drop initialize_globals; program define initialize_globals;
 	global yname "fc"; global xname "ltot";
 	global fanversion "${fandate}allh$fanh${yname}${xname}";
 *	global fanversion "${fandate}h$fanh${yname}${xname}";
-	global usedata_fflie "~/Documents/cc/new_us_data/nber/combined/ffile8003.dta if fullyr==1"; // notice: since we use 8 quarters of data, "totwt" sums to a number that in itself is not meaningful. however, i verified that the relative size of the different sub-data-files is such that one can simply sum the weights, as the code currently does.
-	global usedata_mfile "~/Documents/cc/new_us_data/nber/combined/mfile8003.dta";
+	global usedata_fflie "~/Documents/cc/new_us_data/nber/combined/ffile8603.dta if fullyr==1"; // notice: since we use 8 quarters of data, "totwt" sums to a number that in itself is not meaningful. however, i verified that the relative size of the different sub-data-files is such that one can simply sum the weights, as the code currently does.
+	global usedata_mfile "~/Documents/cc/new_us_data/nber/combined/mfile8603.dta";
 	global vindices_version ""; 
 	global subgroup "_";
 	global cpi_pathfile "~/Documents/cc/new_us_data/nber/last_step/stlouisfed/CPIAUCNS_processed.dta";
@@ -122,7 +122,7 @@ program define vis_lux
 		}
 		su e_temp [w=binwt${spec}`icat'ltot] if $incbin
 		replace luxurindexb$spec = r(mean) if ncats${subgroup}==`icat'
-		replace luxurindexb$spec = . if ncats${subgroup}==`icat' & (`icat'==7 | `icat'==16) 			
+		replace luxurindexb$spec = . if ncats${subgroup}==`icat'  			
 		su f_temp [w=binwt${spec}`icat'ltot] if $incbin
 		replace luxurindexf$spec = r(mean) if ncats${subgroup}==`icat'
 		local ++icat
@@ -139,8 +139,7 @@ program define vis_lux
 		
 	if "$influential_analysis" == "Yes" {
 		local icat = 1
-		while `icat' <=32 { // notice: when icat = 32 regression will include all observations.
-			if `icat'==7 | `icat'==16 local ++icat
+		while `icat' <=30 { // notice: when icat = 30 regression will include all observations.
 			foreach iserv in "" "services" "services ser_catsb${subgroup}" {
 				qui reg luxurindexb$spec catsb${subgroup} `iserv' [w=luxurindexf$spec] if _n~=`icat'
 				local inf_note = "OLS:`iserv' N=" + string(e(N)) + " R^2=" + string(round(e(r2),.01)) + " b=" + string(round(_b[catsb${subgroup}],.1)) + " p="
@@ -387,7 +386,7 @@ cap program drop draw_EC; * draw Engel curves; program def draw_EC;
 		local lfitrange=",range(6000 130000)"; }; 
 	local i =1; 
 	local numcats = 29; if "$yname"=="fsgc" local numcats = 43; 
-	while `i' <=`numcats' {; if `i'==7 | `i'==16 local ++i;
+	while `i' <=`numcats' {;
 		local tit3=ncats3_[`i']; local tit4= ncats4_[`i']; local tit="`tit3' (`tit4')";
 * 	for getting rid of top percentile or other extreme values in case of "fc" or "c";
 		preserve;
@@ -406,8 +405,8 @@ cap program drop draw_EC; * draw Engel curves; program def draw_EC;
 			count if random==1;restore;
 		local ++i;
 	};
-	graph combine ${yname}1$x ${yname}2$x ${yname}3$x ${yname}4$x ${yname}5$x ${yname}6$x       ${yname}8$x ${yname}9$x ${yname}10$x
-				${yname}11$x ${yname}12$x ${yname}13$x ${yname}14$x ${yname}15$x            ${yname}17$x ${yname}18$x ${yname}19$x ${yname}20$x
+	graph combine ${yname}1$x ${yname}2$x ${yname}3$x ${yname}4$x ${yname}5$x ${yname}6$x  ${yname}7$x ${yname}8$x ${yname}9$x ${yname}10$x
+				${yname}11$x ${yname}12$x ${yname}13$x ${yname}14$x ${yname}15$x ${yname}16$x ${yname}17$x ${yname}18$x ${yname}19$x ${yname}20$x
 				${yname}21$x ${yname}22$x ${yname}23$x ${yname}24$x ${yname}25$x ${yname}26$x ${yname}27$x ${yname}28$x ${yname}29$x ${yname}30$x
 				${yname}29$x,             cols(6) altshrink iscale(1.5) xsize(7.5) ysize(10)
 /*			title("") subtitle("log-Engel Curves (CEX)")
@@ -435,7 +434,7 @@ cap program drop Figure29ECs; program def Figure29ECs;
 	merge_vindices;
 	capture gen e_temp=.;
 #delimit;
-	local i=1; while `i'<=29 {; if `i'==7 | `i'==16 local ++i;
+	local i=1; while `i'<=29 {;
 		* prepare for a linear EC presentation (lin-lin);
 		gen lin_xxfc`i' = exp(xxfc`i'ltot);
 		gen lin_pyfc`i' = (pyfc`i'ltot)*(lin_xxfc`i');
@@ -467,7 +466,7 @@ cap program drop Figure29ECs; program def Figure29ECs;
 			xtitle("") ytitle("") title("`tit'") legend(off) name(EC`i',replace) scheme(sj);
 		local ++i;
 	};
-	graph combine EC1 EC2 EC3 EC4 EC5 EC6 EC8 EC9 EC10 EC11 EC12 EC13 EC14 EC15 EC17 EC18 EC19 EC20
+	graph combine EC1 EC2 EC3 EC4 EC5 EC6 EC7 EC8 EC9 EC10 EC11 EC12 EC13 EC14 EC15 EC16 EC17 EC18 EC19 EC20
 		 EC21 EC22 EC23 EC24 EC25 EC26 EC27 EC28 EC29,
      rows(8) scheme(sj) xsize(6.5) ysize(8);
 #delimit;
@@ -509,8 +508,8 @@ cap program drop classify_goods_services
 program def classify_goods_services
 	cap gen services=0
 	replace services=0
-	replace services=1 if inlist(_n, 8,10,12,14,15,17,18,19,20)
-	replace services=1 if inlist(_n, 22,24,25,26,29) 
+	replace services=1 if inlist(_n, 7,9,11,13,14,15,16,17,18)
+	replace services=1 if inlist(_n, 20,22,23,24,27) 
 end
 
 cap program drop merge_mfile 
@@ -533,8 +532,8 @@ end
 cap program drop find_subgroups_totexp // this bit of code is not used in the paper, but it helps to see what the distributions look like.
 program def find_subgroups_totexp
 	tabstat exptot ltot, stats(n p1 p5 p10 p25 p50 p75 p90 p95 p99)
-	tabstat exptot ltot, stats(n p1 p50 p99), if age<50
-	tabstat exptot ltot, stats(n p1 p50 p99), if age>=50
+	tabstat exptot ltot, stats(n p1 p50 p99), if age<40
+	tabstat exptot ltot, stats(n p1 p50 p99), if age>=40
 	tabstat exptot ltot, stats(n p1 p50 p99), if marital==1
 	tabstat exptot ltot, stats(n p1 p50 p99), if marital~=1
 	tabstat exptot ltot, stats(n p1 p50 p99), if race==2
@@ -602,12 +601,12 @@ program def create_reg_tables
 				di "xl: " $xl "    xh: " $xh "    h: " $h
 			}
 			else if "`idemog'" == "Young" {
-				keep if age<50
-				global fangr "be50"
+				keep if age<40
+				global fangr "be40"
 			}
 			else if "`idemog'" == "Old" {
-				keep if age>=50
-				global fangr "up50"
+				keep if age>=40
+				global fangr "up40"
 			}
 			else if "`idemog'" == "Married" {
 				keep if marital==1
@@ -634,8 +633,8 @@ program def create_reg_tables
 			else if "`ivindex'" == "vbN" global subgroup "non_black" 
 			else if "`ivindex'" == "vmr" global subgroup "married" 
 			else if "`ivindex'" == "vmN" global subgroup "non_married" 
-			else if "`ivindex'" == "vyg" global subgroup "be50" 
-			else if "`ivindex'" == "vol" global subgroup "up50" 
+			else if "`ivindex'" == "vyg" global subgroup "be40" 
+			else if "`ivindex'" == "vol" global subgroup "up40" 
 			else if "`ivindex'" == "vrc" global subgroup "hi_inc" 
 			else if "`ivindex'" == "vpr" global subgroup "lo_inc" 
 			global vindices_version ""	
@@ -659,7 +658,7 @@ program def demog_analysis
 	rename luxurindexbfc luxurindexbfc_all_1095
 	rename luxurindexffc luxurindexffc_all_1095
 	
-	foreach ifangr in "be50" "up50" "married" "non_mar" "black" "non_bla" {
+	foreach ifangr in "be40" "up40" "married" "non_mar" "black" "non_bla" {
 		merge 1:1  ncats_ catsb_ services ser_catsb_ /// 
 			using Fan/vis_lux_vars${vix_lux_vars_version}`ifangr'h$fanh$yname$x_${subgroup}1095
 		ta _m*
@@ -678,7 +677,7 @@ program def demog_analysis
 		gen catsfaXser_`i'   = catsfangr_`i'*services
 		local ++i
 	}
-* 1 all 2 be50 3 black 4 married 5 non_bla 6 non_mar 7 up50
+* 1 all 2 be40 3 black 4 married 5 non_bla 6 non_mar 7 up40
 
 	foreach iclust in "" "cluster(ncats)" {
 		foreach iserv in "" "services" "catsfaXser*" "catsfaX*" { // 1st regression: panel A (w/ or w/o same constant across demogs; 2nd: panel B same services dummy across demogs; 3rd: panel B, individual services dummy; 4th: panel C, separate services dummy and services*vindex interactions.
@@ -737,7 +736,7 @@ program def demog_analysis_5_3_2
 	rename luxurindexbfc luxurindexbfc_all_1095
 	rename luxurindexffc luxurindexffc_all_1095
 	
-	foreach ifangr in "be50" "up50" "married" "non_mar" "black" "non_bla" {
+	foreach ifangr in "be40" "up40" "married" "non_mar" "black" "non_bla" {
 		merge 1:1  ncats_ catsb_ services ser_catsb_ /// 
 			using Fan/vis_lux_vars${vix_lux_vars_version}`ifangr'h$fanh$yname$x_${subgroup}1095
 		ta _m*
@@ -761,10 +760,10 @@ program def demog_analysis_5_3_2
 		gen catssuXser_`i'   = catssubgr_`i'*services
 		local ++i
 	}
-* 1 _ 2 be50 3 black 4 hi_inc 5 lo_inc 6 married 7 non_black 8 non_married 9 up50 
-** 1 all 2 be50 3 black 4 married 5 non_bla 6 non_mar 7 up50
+* 1 _ 2 be40 3 black 4 hi_inc 5 lo_inc 6 married 7 non_black 8 non_married 9 up50 
+** 1 all 2 be40 3 black 4 married 5 non_bla 6 non_mar 7 up50
 
-	foreach isubgr in "all" "be50" "up50" "married" "non_mar" "black" "non_bla" {
+	foreach isubgr in "all" "be40" "up40" "married" "non_mar" "black" "non_bla" {
 		di "Subgroup: `isubgr'"
 		foreach iclust in "cluster(ncats)" { // previously (to look also at non-clustered): "" "cluster(ncats)" {
 			foreach iserv in "" "services" "catssuXser*" "catssuX*" { // 1st regression: panel A (w/ or w/o same constant across demogs; 2nd: panel B same services dummy across demogs; 3rd: panel B, individual services dummy; 4th: panel C, separate services dummy and services*vindex interactions.
@@ -791,23 +790,23 @@ program def demog_analysis_5_3_2
 	}
 end
 
-/* 
 
-a list of progs in this file so far:
-initialize_globals
-prepare_data
-merge_vindices
+/*
+*a list of progs in this file so far:
+*initialize_globals
+*prepare_data
+*merge_vindices
 * vis_lux // run by run_vis_lux
-run_vis_lux
+*run_vis_lux
 * fan // run by run_fan
-run_fan
-merge_fan // only necessary if run_fan is not run
-draw_EC // not currently used
-Figure29ECs
-create_fig_hist
-classify_goods_services // run by run_vis_lux and by create_fig_hist
-merge_mfile
-find_subgroups_totexp // not used for paper, but useful to look at.
+*run_fan
+*merge_fan // only necessary if run_fan is not run
+*draw_EC // not currently used
+*Figure29ECs
+*create_fig_hist
+*classify_goods_services // run by run_vis_lux and by create_fig_hist
+*merge_mfile
+*find_subgroups_totexp // not used for paper, but useful to look at.
 */
 
 * to run the whole thing (in a reasonable order):;
@@ -819,10 +818,12 @@ prepare_data;
 create_reg_tables;
 merge_fan;
 merge_vindices; //*needed here for category titles for draw_EC;
+merge_mfile
 *draw_EC; //*only if i want to look at EC's;
 *Figure29ECs; //*only for that figure;
 *create_fig_hist; //*only for that histogram;
-demog_analysis
+*demog_analysis
+find_subgroups_totexp
 
 
 */

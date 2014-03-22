@@ -10,7 +10,7 @@ clear;
 set mem 200m;
 
 *====================================;
-local yrstart=1980; local yrend=2003; // notice: since 2004:3 and 2004:4 are missing, i only take q3 and q4 from 2003, and q1 and q2 from 2004.
+local yrstart=1986; local yrend=2003; // notice: since 2004:3 and 2004:4 are missing, i only take q3 and q4 from 2003, and q1 and q2 from 2004.
 *====================================;
 
 local yr=`yrstart'; while `yr'<=`yrend' {;
