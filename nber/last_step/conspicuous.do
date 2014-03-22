@@ -521,12 +521,15 @@ program def merge_mfile
 	count
 	keep if fullyr==1
 	count
-	byso newid: keep if relation==1
-	count
+*   Keep only 'first' household member (1 head of household, 2 spouse, etc...) 
+    sort relation
+ 	byso newid: keep if _n == 1 
+ 	keep if relation == 1 | relation == 2 //Only heads and spouses
+ 	count
 * notice that there are 79 duplicates (10,479-10,400), or more specifically there are 73 duplicates and 3 "triplicates" (my word), which means 79 extra obs.
 * the extra observations are identifiable in the data (e.g., their "occ" is missing). 
-	drop if occup==.
-	count
+*	drop if occup==.
+*	count
 end
 
 cap program drop find_subgroups_totexp // this bit of code is not used in the paper, but it helps to see what the distributions look like.
@@ -815,10 +818,10 @@ set more off;
 initialize_globals;
 prepare_data; 
 *run_fan; // *not necessary if file is already created, as it takes a long time to run;  
-create_reg_tables;
-merge_fan;
-merge_vindices; //*needed here for category titles for draw_EC;
-merge_mfile
+*create_reg_tables;
+*merge_fan;
+merge_mfile;
+*merge_vindices; //*needed here for category titles for draw_EC;
 *draw_EC; //*only if i want to look at EC's;
 *Figure29ECs; //*only for that figure;
 *create_fig_hist; //*only for that histogram;

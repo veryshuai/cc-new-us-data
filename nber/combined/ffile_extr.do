@@ -18,7 +18,7 @@ local yr=`yrstart'; while `yr'<=`yrend' {;
   local q=1; while `q'<=4 {;
 	if ~( (`yr'==2003 & (`q'==3 | `q'==4)) | (`yr'==1985 & (`q'==3 | `q'==4)) | (`yr'==1995 & (`q'==3 | `q'==4)) | (`yr'==1998 & (`q'==3 | `q'==4))) {;
 		drop _all;
-		infile using nber3.dct, using ("../unzipped/ffile`str_yr'`q'.0");
+		infile using nber3.dct, using ("/home/veryshuai/Documents/cc/new_us_data/nber/unzipped/ffile`str_yr'`q'.0");
 		gen yearq=`yr'`q'; gen yr=`yr'; *gen q=`q';
 		save ".ffile`str_yr'`q'", replace;
 	};
